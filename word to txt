@@ -1,0 +1,27 @@
+
+from win32com import client as wc
+import os
+ 
+print('Enter your Director\'s path:')
+mypath = input()
+all_FileNum = 0
+ 
+def Translate(level, path):
+    global all_FileNum
+    files = os.listdir(path)
+    for f in files:
+        if (f[0] == '~' or f[0] == '.'):
+            continue
+        new = path + '\\\\' + f
+        print(new)
+        tmp = new[:-4]
+        word = wc.Dispatch('Word.Application')
+        doc = word.Documents.Open(tmp)
+        doc.SaveAs(tmp + '.txt', 4)
+        doc.Close()
+        all_FileNum = all_FileNum + 1
+
+
+if __name__ == '__main__':
+    Translate(1, mypath)
+    print('num of file = ', all_FileNum)
