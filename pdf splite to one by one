@@ -1,0 +1,63 @@
+
+import os
+from PyPDF2 import PdfFileReader, PdfFileWriter
+import pandas as pd
+def split(pdf_file, delta, output_dir,output_dir1):
+    a = pd.read_csv('c:/NDL1/20181217entry5.csv',encoding='utf-8',sep = ',')["name"].values
+    e1 = pd.read_csv('c:/NDL1/20181217entry5.csv',encoding='utf-8',sep = ',')["entry"].values
+    b = pd.read_csv('c:/NDL1/20181217entry5.csv',encoding='utf-8',sep = ',')["box"].values
+    c = pd.read_csv('c:/NDL1/20181217entry5.csv',encoding='utf-8',sep = ',')["folder"].values
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    if not os.path.exists(pdf_file):
+        return
+    input_stream = open(pdf_file, 'rb')
+    pdf_input = PdfFileReader(input_stream)
+    page_count = pdf_input.getNumPages()
+    sum_page_count = int(page_count / (delta * 1.0))
+    remind_page = page_count % delta
+    for ii in range(len(a)):
+        if pdf_file.split('\\')[-1][:-4]==a[ii]:
+            ##bb=int(b[ii])
+            cc=c[ii]
+            aa=a[ii]
+    path=os.path.join(output_dir,str(aa))
+    os.makedirs(path)
+    path1=os.path.join(output_dir1,str(aa))
+    os.makedirs(path1)
+    for i in range(0, sum_page_count + 1):
+        start = i * delta
+        end = (i + 1) * delta 
+        pdf_out = PdfFileWriter()
+        file_path = os.path.join(output_dir, os.path.split(pdf_file)[1]) #
+        if i < sum_page_count:
+            file_path = os.path.join(path, str(aa)+"_"+str(i+1) + ".pdf")
+            for j in range(start, end):
+                page = pdf_input.getPage(j)
+                pdf_out.addPage(page)
+        else:
+            file_path = os.path.join(path, str(aa)+"_"+str(i+1) + ".pdf")
+            for j in range(delta * (sum_page_count), page_count):
+                page = pdf_input.getPage(j)
+                pdf_out.addPage(page)
+        out_stream = open(file_path, 'wb')
+        pdf_out.write(out_stream)
+        out_stream.close()
+    input_stream.close()
+
+
+
+
+
+out_dir ='c:/NDL1/q'
+out_dir1 ='c:/NDL1/qq'
+page_count =1
+fn7 = os.path.join("c:/NDL/download_PDF_1232")
+#for i in range(len(fn6)):
+  #pa=os.path.join('c:/','NDL','download_PDF_1232',fn6[i])
+fn8=os.listdir(fn7)
+for ii in range(len(fn8)):
+    pa1=os.path.join(fn7,fn8[ii])
+    split(pa1, page_count, out_dir,out_dir1)
+
+
